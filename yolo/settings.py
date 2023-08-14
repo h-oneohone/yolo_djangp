@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'yolo',
     'home',
-    'CRUD_person',
     'rest_framework',
     'yolov8'
 ]

@@ -18,17 +18,18 @@ model_path = "models/best.onnx"
 yolov8_detector = YOLOv8(model_path, conf_thres=0.2, iou_thres=0.3)
 
 
-# Hàm chuyển đổi từ OpenCV sang Image
+
+# Function to convert OpenCV image to Django ImageField
 def cv2_to_image(cv2_img):
-    # Chuyển mảng ảnh OpenCV thành đối tượng Image
+    # Function to convert OpenCV image to  ImageField
     rgb_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
     img_pil = Image.fromarray(rgb_img)
 
-    # Tạo tên file tạm thời và định dạng file (có thể sử dụng tên file thật của bạn)
+    # Create a temporary file-like object using SimpleUploadedFile
     temp_file_name = "temp_img.jpg"
     temp_file_format = "JPEG"
 
-    # Lưu đối tượng Image thành đối tượng UploadedFile có thể lưu trong Django
+    # Save Image object as an UploadedFile object that can be saved in Django
     temp_io = BytesIO()
     img_pil.save(temp_io, format=temp_file_format)
     temp_io.seek(0)
@@ -46,11 +47,6 @@ class TrafficSignSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-    def cv2_to_image(self, cv_image):
-        # Chuyển đổi từ OpenCV (NumPy array) sang mảng dữ liệu hình ảnh
-        pil_image = Image.fromarray(cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB))
-        return pil_image
-
     def create(self, validated_data):
         request = self.context.get('request')
         image_file = request.FILES['image']
@@ -65,7 +61,6 @@ class TrafficSignSerializer(serializers.ModelSerializer):
         # Decode the NumPy array into an OpenCV image
         cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-        cv2.imwrite("test.jpg", cv_image)
         # Detect Objects and calculate inference time
         start = time.time()
         boxes, scores, class_ids = yolov8_detector(cv_image)
@@ -74,7 +69,6 @@ class TrafficSignSerializer(serializers.ModelSerializer):
 
         # Draw bounding boxes and labels of detections
         combined_img = yolov8_detector.draw_detections(cv_image)
-        cv2.imwrite("test2.jpg", combined_img)
         # Convert to Image object and save to validated_data
         validated_data['image'] = cv2_to_image(combined_img)
         return super().create(validated_data)
