@@ -11,6 +11,7 @@ import numpy as np
 import cv2
 import time
 from yolo8.YOLOv8 import YOLOv8
+import json
 
 
 # Load a model
@@ -71,4 +72,6 @@ class TrafficSignSerializer(serializers.ModelSerializer):
         combined_img = yolov8_detector.draw_detections(cv_image)
         # Convert to Image object and save to validated_data
         validated_data['image'] = cv2_to_image(combined_img)
+        validated_data['description'] = json.dumps({'class_ids': class_ids.tolist(), 'scores': scores.tolist(), 'boxes': boxes.tolist()})
+        # validated_data['description'] = [' '.join([str(x) for x in class_ids]), ' '.join([str(x) for x in scores]), ' '.join([str(x) for x in boxes])]
         return super().create(validated_data)
