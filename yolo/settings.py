@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'yolo',
-    'home',
     'rest_framework',
     'yolov8'
 ]

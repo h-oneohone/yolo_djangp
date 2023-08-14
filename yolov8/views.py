@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 
 from PIL import Image
-from ultralytics import YOLO
 import numpy as np
 import cv2
 

@@ -1,8 +1,0 @@
-<div class="col-md-12">
-    <h1> this is up img page</h1>
-    <form action="{% url 'home:upload'%}" method="post" enctype="multipart/form-data" >
-        {% csrf_token %}
-        {{ UF }}
-        <input type="submit" value="upload">
-    </form>
-</div>
